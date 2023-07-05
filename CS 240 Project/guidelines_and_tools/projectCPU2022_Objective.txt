@@ -1,0 +1,47 @@
+Project Objectives
+==================
+
+- You design your own projectCPU2022.v and only upload this file on LMS.
+
+- projectCPU2022.v should both successfully:
+
+  Simulate
+  and Synthesize
+  
+Simulation
+==========
+
+- Create a Xilinx ISE project with:
+
+  projectCPU2022_tb.v
+  projectCPU2022.v
+  blram.v
+  projectCPU2022_program.v (read from blram.v)
+  
+- Should pass syntax.
+
+- Should simulate without any ISE errors.
+
+- The testbench should pass without errors. Loo in outputLog.txt. Total Errors should be 0.
+
+- If not see where your errors are through the messages in outputLog.txt.
+
+- Debug using waveforms. Display the waveform for errorCount.
+
+Synthesis
+=========
+
+- Synthesize only projectCPU2022.v.
+
+- Should have no errors. Pay attention to "multiple drivers" especially.
+
+- Should all eliminate all warnings if possible. Especially pay attention to "latch inferred" messages.
+
+- Review all warnings and sign off on them.
+
+- Warnings on your usage of #1 is okay.
+
+Submit
+======
+
+- Submit only projectCPU2022.v.

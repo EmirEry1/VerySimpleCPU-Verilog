@@ -1,0 +1,48 @@
+Guidelines of RTL Coding
+
+Top level design is a module.
+In that, we actually describe a netlist (ie. circuit).
+Circuit components can be either "always" blocks or module instances.
+There can also be "assign" statements. Actually, an assign is the same as a single-line always @*.
+
+Always blocks are of two types: "always @(posedge clk)" and "always @*"
+In an always @(posedge clk) we should only write "etc <= #1 etcNxt;".
+In always @*, we write all our logic.
+
+Most common errors are as follows: 
+
+1. latch (= comb. loop)
+2. multiple driver
+3. multiple-clock design
+4. not creating a flip-flop (although you need to)
+
+1. latch problem:
+
+If there is no default assignment for a given output variable at the top of an "always @*", a latch may get formed.
+To prevent this, you need to put default assignments in the top of always @*. 
+(latch inferred: only a warning. error would be more appropriate.
+FF/latch not intialized and similar FF/latch warnings do not mean you have latches.
+In the presence of a latch, ie. combinational loop, the compiler gives "latch inferred" warning. 
+You need to pay attention to the log files for that.)
+
+2. multiple driver problemi:
+
+The same variable cannot be driven (ie. assigned to) from two different places, always blocks or assigns or module instances (they may be read from multiple places though). Multiple driver causes an error on Xilinx ISE but on Xilinx Vivado it sometimes causes warnings (but should be treated as error).
+
+3. multiple-clock problem:
+
+You need to do your designs with a single clock. And the clock has to be a "free running" clock either coming from outside the FPGA or coming from a DCM (Digital Clock Manager) inside the FPGA. If you really need to have multiple clock domains, you need to consult an expert. That is because the timing problems caused by multiple clocks cannot be detected in simulation, and on the FPGA they do not always show up.
+
+4. not creating a flip-flop:
+
+If we assign a value to a variable in a clock cycle and use that variable in a different clock cycle, then we have to save that variable in a "register" (ie. multi-bit flip-flop). When we declare a variable as "reg", that does not mean we are storing that variable in a register. To create a flop:
+
+always @(posedge clk) begin
+   var <= #1 varNxt; // var = flop output, varNxt = flop input
+end
+
+you need to use the template above. Later, inside always @*, at the top:
+
+varNxt = var; // ie. default assignment
+
+you write the above, Then, lower in the always, you write "varNxt =" as your computation requires.
